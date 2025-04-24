@@ -1,0 +1,1 @@
+# Bass mode animation logic

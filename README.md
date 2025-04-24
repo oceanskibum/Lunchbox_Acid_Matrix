@@ -7,108 +7,145 @@
 | |___| |_| | | | | (__| | | | |_) | (_) >  <   / ____ \ (__| | (_| |
 |______\__,_|_| |_|\___|_| |_|____/ \___/_/\_\ /_/    \_\___|_|\__,_|
 
->>> SYSTEM ONLINE — WELCOME TO LUNCHBOX_ACID_MATRIX V1.12                  
+>>> SYSTEM ONLINE — WELCOME TO LUNCHBOX_ACID_MATRIX 
+>>> V1.13   
 ```
 
-> **Modular LED Matrix Visualizer** built for Raspberry Pi 4 with the Adafruit RGB Matrix Bonnet.  
-> Features real-time audio-reactive visuals, motion controls, and genre-driven animation modes.
+# Lunchbox Acid Matrix
+
+A Raspberry Pi 4-powered LED matrix visualizer built for technologists who require modular visual mayhem in a small form factor that is envirormentally aware. [PLUR.TECH]
 
 ---
 
-## Compatibility Warning
+## Navigation
 
-> This project **will not work on Raspberry Pi 5**.  
-> The `rpi-rgb-led-matrix` library by hzeller is not currently compatible with Pi 5 hardware due to DMA/interrupt architecture changes.  
-> Please use a **Raspberry Pi 4** for stable operation.
+Lunchbox_Acid_Matrix/
+├── README_IMU.md                   # IMU + DFROBOT button wiring guide
+├── lunchbox_acid_matrix.py         # Main runtime launcher
+├── service/
+│   └── lunchbox_acid_matrix.service  # systemd startup unit
+├── config/
+│   ├── button_config.json          # Button mappings and layered combos
+│   ├── config.json                 # Core settings (mode, brightness, etc)
+│   ├── playlist.json               # Playlist mode configuration
+│   └── state.json                  # Runtime persistence for last mode, brightness
+├── src/
+│   ├── main.py                     # CLI tool (interactive configuration)
+│   ├── animations/
+│   │   ├── bass_mode.py
+│   │   ├── basshouse_mode.py
+│   │   ├── dancer_mode.py
+│   │   ├── fade_transition.py
+│   │   ├── house_mode.py
+│   │   ├── idle_mode.py
+│   │   └── techno_mode.py
+│   ├── audio/
+│   │   └── audio_input.py          # USB mic support + beat detection
+│   └── input/
+│       └── imu_input.py            # Motion via MPU6050 (dancer mode)
+
+---
+
+## Project Highlights
+- 64x64 LED Matrix (Adafruit RGB Matrix Bonnet)
+- USB mic input for **beat detection and sensitivity tuning**
+- IMU support for **motion-reactive dance mode**
+- Button-based interaction for field operation (no screen needed)
+- CLI configuration tool for setup and customization
+- Visuals react to genre, playlist, motion, or ambient vibe
+
+---
+
+## Raspberry Pi 5 Warning
+This project **will not work on a Pi 5** due to driver incompatibility with hzeller's RGB matrix library.  
+Use a **Raspberry Pi 4 (recommended: 4GB or 8GB)**.
+
+---
+
+## Hardware Required
+- Raspberry Pi 4
+- Adafruit RGB Matrix Bonnet
+- 64x64 RGB Matrix panel
+- DFROBOT Gravity LED Push Buttons (DFR0785, x2)
+- MPU6050 (motion sensor)
+- USB Microphone (for audio-reactive visuals)
 
 ---
 
 ## Features
-
-- Genre-reactive modes: `House`, `Bass`, `Techno`, `BassHouse`
-- USB microphone support with beat/BPM detection
-- IMU motion-reactive control (`Jump`, `Bounce`, `Walk`)
-- Configurable buttons with layered combo logic
-- Idle playlist auto-cycling visuals
-- CLI tool and full install script
-- Fade transitions between modes
-
----
-
-## Setup
-
-```bash
-sudo apt update && sudo apt install -y \
-  python3-pip python3-smbus python3-venv i2c-tools build-essential git
-```
-
-Enable I2C:
-```bash
-sudo raspi-config  # Interface Options → I2C → Enable
-```
+- Genre-reactive modes: `house`, `bass`, `techno`, `basshouse`
+- Audio sensitivity adjustment (button or config)
+- Motion-reactive “Dancer Mode”
+- Visual “404 - Vibes Not Found” idle animation
+- Playlist mode with automatic cycling
+- Button-only operation for backpack use
+- Fully editable config files
+- Stylized CLI interface for setup & testing
 
 ---
 
-## Install (One Liner)
-
+## Installation
 ```bash
-curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash
+# SSH into your Pi
+sudo apt update && sudo apt install -y git unzip
+
+# Clone the repo
+git clone https://github.com/oceanskibum/Lunchbox_Acid_Matrix.git
+cd Lunchbox_Acid_Matrix
+
+# Run the installer
+bash scripts/install.sh
 ```
 
-For systemd auto-start:
+To enable auto-launch:
 ```bash
-curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash -s -- --with-systemd
+bash scripts/install.sh --with-systemd
 ```
 
 ---
 
-## Folder Structure
-
-```
-Lunchbox_Acid_Matrix/
-├── config/
-│   └── button_config.json
-├── src/
-│   ├── animations/
-│   ├── audio/
-│   ├── input/
-│   ├── utils/
-│   │   └── button_handler.py
-├── scripts/
-│   └── install.sh
-├── lunchbox_acid_matrix.py
-├── README.md
-├── LICENSE
+## Running the CLI Tool
+Use the CLI from terminal to configure:
+```bash
+python3 src/main.py
 ```
 
 ---
 
-## Button System
-
-```json
-// config/button_config.json
-{
-  "next": 17,
-  "prev": 27,
-  "modes": {
-    "brightness_toggle": { "combo": ["next", "prev"], "type": "tap" },
-    "shutdown":         { "combo": ["next", "prev"], "type": "hold", "duration": 2 },
-    "sensitivity_menu": { "combo": ["next", "prev"], "type": "double_tap", "within": 1.5 }
-  },
-  "menu_actions": {
-    "sensitivity_adjust": {
-      "mode": "sensitivity_menu",
-      "increase": "next",
-      "decrease": "prev",
-      "timeout": 5
-    }
-  }
-}
+## Running the Matrix Display (Field Mode)
+No screen required — just power it:
+```bash
+python3 lunchbox_acid_matrix.py
 ```
+
+This pulls config from:
+- `config/config.json`
+- `config/playlist.json`
+- `config/state.json`
+
+Uses buttons to interact live.
+
+---
+
+## Wiring & GPIO
+See `README_IMU.md` for detailed wiring instructions for:
+- DFROBOT Gravity buttons (3-wire)
+- MPU6050 IMU
+- Compatible GPIOs with Adafruit Bonnet
+
+---
+
+## Customize
+Edit these files:
+- `config/config.json` → master settings
+- `playlist.json` → cycling mode
+- `state.json` → runtime memory
+- `button_config.json` → combo logic
 
 ---
 
 ## License
+MIT — Share, remix
 
-MIT — Remix and flash responsibly.
+---
 
