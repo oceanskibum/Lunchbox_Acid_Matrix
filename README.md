@@ -15,7 +15,7 @@
 
 ---
 
-## 🚫 Compatibility Warning
+## Compatibility Warning
 
 > This project **will not work on Raspberry Pi 5**.  
 > The `rpi-rgb-led-matrix` library by hzeller is not currently compatible with Pi 5 hardware due to DMA/interrupt architecture changes.  
@@ -23,7 +23,7 @@
 
 ---
 
-## 🔥 Features
+## Features
 
 - Genre-reactive modes: `House`, `Bass`, `Techno`, `BassHouse`
 - USB microphone support with beat/BPM detection
@@ -35,7 +35,7 @@
 
 ---
 
-## 🧪 Setup
+## Setup
 
 ```bash
 sudo apt update && sudo apt install -y \
@@ -49,7 +49,7 @@ sudo raspi-config  # Interface Options → I2C → Enable
 
 ---
 
-## 🧰 Install (One Liner)
+## Install (One Liner)
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash
@@ -62,7 +62,7 @@ curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/mai
 
 ---
 
-## 🧠 Folder Structure
+## Folder Structure
 
 ```
 Lunchbox_Acid_Matrix/
@@ -83,7 +83,7 @@ Lunchbox_Acid_Matrix/
 
 ---
 
-## 🎛️ Button System
+## Button System
 
 ```json
 // config/button_config.json
@@ -108,7 +108,7 @@ Lunchbox_Acid_Matrix/
 
 ---
 
-## 📜 License
+## License
 
 MIT — Remix and flash responsibly.
 
