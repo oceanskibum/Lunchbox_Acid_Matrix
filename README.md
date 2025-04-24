@@ -20,17 +20,20 @@ A Raspberry Pi 4-powered LED matrix visualizer built for technologists who requi
 ## Navigation
 ```
 Lunchbox_Acid_Matrix/
-├── README_IMU.md                   # IMU + DFROBOT button wiring guide
-├── lunchbox_acid_matrix.py         # Main runtime launcher
+├── README.md                        # Project overview + install instructions
+├── README_IMU.md                    # Wiring guide for buttons and IMU
+├── lunchbox_acid_matrix.py         # Runtime launcher
+├── scripts/
+│   └── install.sh                  # Full installer with venv + systemd support
 ├── service/
 │   └── lunchbox_acid_matrix.service  # systemd startup unit
 ├── config/
-│   ├── button_config.json          # Button mappings and layered combos
-│   ├── config.json                 # Core settings (mode, brightness, etc)
-│   ├── playlist.json               # Playlist mode configuration
-│   └── state.json                  # Runtime persistence for last mode, brightness
+│   ├── button_config.json          # Button combo mapping
+│   ├── config.json                 # User settings (mode, brightness, audio, etc)
+│   ├── playlist.json               # Mode auto-cycle config
+│   └── state.json                  # Last known state (runtime memory)
 ├── src/
-│   ├── main.py                     # CLI tool (interactive configuration)
+│   ├── main.py                     # Stylized CLI config tool
 │   ├── animations/
 │   │   ├── bass_mode.py
 │   │   ├── basshouse_mode.py
@@ -40,9 +43,10 @@ Lunchbox_Acid_Matrix/
 │   │   ├── idle_mode.py
 │   │   └── techno_mode.py
 │   ├── audio/
-│   │   └── audio_input.py          # USB mic support + beat detection
+│   │   └── audio_input.py          # USB mic input + beat detection
 │   └── input/
-│       └── imu_input.py            # Motion via MPU6050 (dancer mode)
+│       └── imu_input.py            # MPU6050 motion detection
+
 ```
 ---
 
