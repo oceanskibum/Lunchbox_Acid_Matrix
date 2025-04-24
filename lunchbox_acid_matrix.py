@@ -41,7 +41,7 @@ class Runtime:
             "enter_menu": lambda: print("🎚 Entering sensitivity menu"),
             "sensitivity_up": self.sensitivity_up,
             "sensitivity_down": self.sensitivity_down,
-            "exit_menu": lambda: print("👋 Exiting menu")
+            "exit_menu": lambda: print("Exiting menu")
         })
 
     def brightness_toggle(self):
@@ -74,7 +74,7 @@ class Runtime:
             time.sleep(1)
 
     def run(self):
-        print("🚀 Starting Lunchbox Acid Matrix runtime...")
+        print("Starting Lunchbox Acid Matrix runtime...")
         threads = []
         if self.config["playlist_mode"]:
             threads.append(threading.Thread(target=self.playlist_loop))
@@ -93,7 +93,7 @@ class Runtime:
         except KeyboardInterrupt:
             self.running = False
             save_state(self.config)
-            print("\n🛑 Exited cleanly.")
+            print("\n Exited cleanly.")
 
 if __name__ == "__main__":
     Runtime().run()
