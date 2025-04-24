@@ -40,6 +40,16 @@ MOTION: MPU6050 IMU (via I2C)
 
 ---
 
+## `> One-Liner Install
+## One-Line Install
+
+Run this on your Pi to set up Lunchbox_Acid_Matrix instantly:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash
+
+---
+
 ## `> SETUP`
 
 ```bash
