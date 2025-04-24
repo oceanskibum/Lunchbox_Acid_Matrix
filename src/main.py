@@ -29,7 +29,7 @@ def save_config(data):
 def spinner(msg="Saving..."):
     print(msg, end="")
     for _ in range(6):
-        for c in "|/-\": print(f"\b{c}", end="", flush=True); time.sleep(0.1)
+        for c in "|/-\\": print(f"\b{c}", end="", flush=True); time.sleep(0.1)
     print("\b ✔")
 
 def show_menu():
