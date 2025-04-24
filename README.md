@@ -47,6 +47,11 @@ Run this on your Pi to set up Lunchbox_Acid_Matrix instantly:
 ```bash
 curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash
 ```
+#Enable auto-start on boot with systemd:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash -s -- --with-systemd
+```
 
 ---
 
