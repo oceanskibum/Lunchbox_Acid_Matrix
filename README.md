@@ -10,8 +10,8 @@
                     >>> SYSTEM ONLINE — WELCOME TO LUNCHBOX_ACID_VIZ
 ```
 
-> **Modular EDM LED Matrix Visualizer** for Raspberry Pi + Adafruit RGB Bonnet  
-> Visuals that pulse to your bass, react to your motion, and melt minds on the dance floor.
+> **Modular LED Matrix Visualizer** for Raspberry Pi + Adafruit RGB Bonnet  
+> Visuals that can be audio-reactive , motion-reactive, and mildly mind-reactive. Button mapped for easy mobile management. 
 
 ---
 
