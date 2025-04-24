@@ -18,7 +18,7 @@ A Raspberry Pi 4-powered LED matrix visualizer built for technologists who requi
 ---
 
 ## Navigation
-
+```
 Lunchbox_Acid_Matrix/
 ├── README_IMU.md                   # IMU + DFROBOT button wiring guide
 ├── lunchbox_acid_matrix.py         # Main runtime launcher
@@ -43,7 +43,7 @@ Lunchbox_Acid_Matrix/
 │   │   └── audio_input.py          # USB mic support + beat detection
 │   └── input/
 │       └── imu_input.py            # Motion via MPU6050 (dancer mode)
-
+```
 ---
 
 ## Project Highlights
