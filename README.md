@@ -1,146 +1,114 @@
 
 ```
-  _                  _               _               _    _           _             
- | |                | |             | |             | |  (_)         | |            
- | |     ___   ___  | | _____  _   _| |__   ___ _ __| | ___  ___  ___| |_ ___  _ __ 
- | |    / _ \ / _ \ | |/ / _ \| | | | '_ \ / _ \ '__| |/ / |/ _ \/ __| __/ _ \| '__|
- | |___| (_) | (_) ||   < (_) | |_| | |_) |  __/ |  |   <| |  __/\__ \ || (_) | |   
- |______\___/ \___(_)_|\_\___/ \__,_|_.__/ \___|_|  |_|\_\_|\___||___/\__\___/|_|   
-                                                                                   
-                    >>> SYSTEM ONLINE — WELCOME TO LUNCHBOX_ACID_VIZ
+  _                      _               _               _      _           _       
+ | |                    | |             | |             | |    (_)         | |      
+ | |     __ _ _ __   ___| |__  _   _ ___| |_ _   _ _ __ | |     _ _ __   __| | ___  
+ | |    / _` | '_ \ / __| '_ \| | | / __| __| | | | '_ \| |    | | '_ \ / _` |/ _ \ 
+ | |___| (_| | | | | (__| | | | |_| \__ \ |_| |_| | |_) | |____| | | | | (_| |  __/ 
+ |______\__,_|_| |_|\___|_| |_|\__,_|___/\__|\__,_| .__/|______|_|_| |_|\__,_|\___| 
+                                                  | |                               
+                                                  |_|                               
 ```
 
-> **Modular LED Matrix Visualizer** for Raspberry Pi + Adafruit RGB Bonnet  
-> Visuals that can be audio-reactive , motion-reactive, and mildly mind-reactive. Button mapped for easy mobile management. 
+> **Modular LED Matrix Visualizer** built for Raspberry Pi 4 with the Adafruit RGB Matrix Bonnet.  
+> Features real-time audio-reactive visuals, motion controls, and genre-driven animation modes.
 
 ---
 
-## `> BOOT INFO`
+## 🚫 Compatibility Warning
 
-```plaintext
-SYSTEM: Raspberry Pi 4 (8GB recommended)
-DISPLAY: Adafruit 64x64 RGB Matrix + Bonnet
-AUDIO: USB Mic (FFT-powered bass detection)
-MOTION: MPU6050 IMU (via I2C)
+> This project **will not work on Raspberry Pi 5**.  
+> The `rpi-rgb-led-matrix` library by hzeller is not currently compatible with Pi 5 hardware due to DMA/interrupt architecture changes.  
+> Please use a **Raspberry Pi 4** for stable operation.
+
+---
+
+## 🔥 Features
+
+- Genre-reactive modes: `House`, `Bass`, `Techno`, `BassHouse`
+- USB microphone support with beat/BPM detection
+- IMU motion-reactive control (`Jump`, `Bounce`, `Walk`)
+- Configurable buttons with layered combo logic
+- Idle playlist auto-cycling visuals
+- CLI tool and full install script
+- Fade transitions between modes
+
+---
+
+## 🧪 Setup
+
+```bash
+sudo apt update && sudo apt install -y \
+  python3-pip python3-smbus python3-venv i2c-tools build-essential git
+```
+
+Enable I2C:
+```bash
+sudo raspi-config  # Interface Options → I2C → Enable
 ```
 
 ---
 
-## `> FEATURES`
-
-```
-[+] Audio-reactive visualizations (bass, BPM, beat)
-[+] Genre-based modes: HOUSE, BASS, TECHNO, BASSHOUSE
-[+] IMU-powered motion mode (walk, bounce, jump)
-[+] Button controls: brightness, mode, shutdown, toggle features
-[+] Playlist system for idle ambient visuals
-[+] Auto-switch visuals based on detected BPM
-[+] Fade transitions between modes
-```
-
----
-
-## `> One-Liner Install`
-
-Run this on your Pi to set up Lunchbox_Acid_Matrix instantly:
+## 🧰 Install (One Liner)
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash
 ```
-#Enable auto-start on boot with systemd:
 
+For systemd auto-start:
 ```bash
 curl -sSL https://raw.githubusercontent.com/oceanskibum/Lunchbox_Acid_Matrix/main/scripts/install.sh | bash -s -- --with-systemd
 ```
 
 ---
 
-## `> SETUP`
-
-```bash
-sudo apt update && sudo apt install -y python3-pip python3-smbus i2c-tools build-essential git
-pip3 install sounddevice numpy RPi.GPIO
-```
-
-Enable I2C:
-```bash
-sudo raspi-config  # Interface Options > I2C > Enable
-```
-
----
-
-## `> RUN`
-
-```bash
-python3 launch.py
-```
-
-Autostart with systemd:
-```bash
-sudo cp service/lunchbox_acid_viz.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable lunchbox_acid_viz
-sudo systemctl start lunchbox_acid_viz
-```
-
----
-
-## `> FILE STRUCTURE`
+## 🧠 Folder Structure
 
 ```
-Lunchbox_Acid_Viz/
-├── config/          # Visual settings, playlist, state
+Lunchbox_Acid_Matrix/
+├── config/
+│   └── button_config.json
 ├── src/
-│   ├── animations/  # Visual effects
-│   ├── audio/       # USB mic & beat detection
-│   ├── input/       # IMU sensor logic
-│   ├── utils/       # Transitions and helpers
-├── launch.py        # Main runner
+│   ├── animations/
+│   ├── audio/
+│   ├── input/
+│   ├── utils/
+│   │   └── button_handler.py
+├── scripts/
+│   └── install.sh
+├── lunchbox_acid_matrix.py
 ├── README.md
-├── README_IMU.md    # Motion mode setup
-├── LICENSE          # MIT
-├── CONTRIBUTING.md  # Pull request info
+├── LICENSE
 ```
 
 ---
 
-## `> CONFIGURE`
+## 🎛️ Button System
 
 ```json
-// config/config.json
+// config/button_config.json
 {
-  "visualization": "house_mode",
-  "audio_reactive": true,
-  "audio_sensitivity": 1.5,
-  "idle_message": "404 - Vibes Not Found"
+  "next": 17,
+  "prev": 27,
+  "modes": {
+    "brightness_toggle": { "combo": ["next", "prev"], "type": "tap" },
+    "shutdown":         { "combo": ["next", "prev"], "type": "hold", "duration": 2 },
+    "sensitivity_menu": { "combo": ["next", "prev"], "type": "double_tap", "within": 1.5 }
+  },
+  "menu_actions": {
+    "sensitivity_adjust": {
+      "mode": "sensitivity_menu",
+      "increase": "next",
+      "decrease": "prev",
+      "timeout": 5
+    }
+  }
 }
 ```
 
-```json
-// config/playlist.json
-{
-  "default": ["house_mode", "bass_mode", "techno_mode"],
-  "interval_sec": 90
-}
-```
-
 ---
 
-## `> HACKABLE CONTROLS`
+## 📜 License
 
-| Action                     | Control                          |
-|----------------------------|----------------------------------|
-| Switch visual              | NEXT button                      |
-| Previous visual            | PREV button                      |
-| Change brightness          | Tap both buttons                 |
-| Toggle motion mode         | Hold PREV for 2s                 |
-| Sensitivity toggle         | Double-tap both buttons quickly  |
-| Safe shutdown              | Hold BOTH for 2s                 |
+MIT — Remix and flash responsibly.
 
----
-
-## `> LICENSE`
-
-```plaintext
-MIT License — remix, remap, re-drop.
-```
