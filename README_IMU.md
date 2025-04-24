@@ -1,7 +1,7 @@
 
 # Motion Sensor + LED Button Wiring Guide
 
-This guide shows how to wire the MPU6050 IMU and DFROBOT Gravity LED Buttons (SKU: DFR0785) to a **Raspberry Pi 4** with the **Adafruit RGB Matrix Bonnet** installed.
+This guide shows how to wire the MPU6050 IMU and DFROBOT Gravity LED Buttons (SKU: DFR0785) to a **Raspberry Pi 4** with the **Adafruit RGB Matrix Bonnet** installed. [Timeout function TBD]
 
 ---
 
