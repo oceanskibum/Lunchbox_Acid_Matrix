@@ -1,0 +1,9 @@
+{
+  "default": [
+    "house_mode",
+    "bass_mode",
+    "techno_mode",
+    "basshouse_mode"
+  ],
+  "interval_sec": 90
+}

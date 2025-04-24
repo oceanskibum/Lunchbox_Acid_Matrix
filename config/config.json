@@ -1,0 +1,9 @@
+{
+  "visualization": "house_mode",
+  "audio_reactive": true,
+  "audio_sensitivity": 1.5,
+  "idle_message": "404 - Vibes Not Found",
+  "brightness": 75,
+  "motion_mode_enabled": true,
+  "playlist_mode": true
+}
