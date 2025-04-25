@@ -72,7 +72,8 @@ else
     git pull
   else
     echo "Warning: Existing rpi-rgb-led-matrix is not a valid git repo. Re-cloning..."
-    rm -rf rpi-rgb-led-matrix
+    echo "Removing old rpi-rgb-led-matrix directory (requires sudo)..."
+    sudo rm -rf rpi-rgb-led-matrix
     git clone $MATRIX_LIB_REPO
   fi
 fi
