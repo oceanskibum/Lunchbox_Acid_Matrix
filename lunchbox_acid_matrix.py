@@ -21,9 +21,8 @@ def save_state(state):
         json.dump(state, f, indent=2)
 
 def fake_visualizer(mode):
-    print(f"🎨 [Mode Active]: {mode}")
-    print("✨ Animating on matrix...
-")
+    print(f"[Mode Active]: {mode}")
+    print("Animating on matrix...\n")
 
 class Runtime:
     def __init__(self):
@@ -46,7 +45,7 @@ class Runtime:
 
     def brightness_toggle(self):
         self.config["brightness"] = 100 if self.config["brightness"] < 50 else 25
-        print(f"🔆 Brightness set to {self.config['brightness']}")
+        print(f"Brightness set to {self.config['brightness']}")
 
     def sensitivity_up(self):
         self.config["audio_sensitivity"] += 0.2
@@ -55,6 +54,10 @@ class Runtime:
     def sensitivity_down(self):
         self.config["audio_sensitivity"] = max(0.2, self.config["audio_sensitivity"] - 0.2)
         print(f"🔉 Sensitivity: {self.config['audio_sensitivity']:.2f}")
+
+    def shutdown(self):
+        self.running = False
+        print("Shutdown triggered.")
 
     def playlist_loop(self):
         while self.running:
