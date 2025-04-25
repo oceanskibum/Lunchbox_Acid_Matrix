@@ -21,10 +21,10 @@ def setup_matrix():
     options.cols = 64
     options.chain_length = 1
     options.parallel = 1
-    options.slowdown_gpio = 4
+    options.gpio_slowdown = 4  # Renamed from slowdown_gpio
     options.pwm_bits = 11
-    options.gpio_mapping = "adafruit-hat-pwm"
-    options.hardware_pulsing = False
+    options.hardware_mapping = 'adafruit-hat-pwm'  # Replaces gpio_mapping
+    options.disable_hardware_pulsing = True  # Replaces hardware_pulsing
     return RGBMatrix(options=options)
 
 def run_visualization(matrix, mode_name):
