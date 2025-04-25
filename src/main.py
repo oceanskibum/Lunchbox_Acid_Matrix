@@ -14,7 +14,7 @@ ascii_art = """
 |______\__,_|_| |_|\___|_| |_|____/ \___/_/\_\ /_/    \_\___|_|\__,_|
 
 >>> SYSTEM ONLINE — WELCOME TO LUNCHBOX_ACID_MATRIX CLI
->>> V1.13                                                                     |___/ 
+>>> V1.13
 """
 
 def load_config():
@@ -24,7 +24,7 @@ def load_config():
 def save_config(data):
     with open(CONFIG_PATH, 'w') as f:
         json.dump(data, f, indent=2)
-    print("\n✅ Config saved successfully!")
+    print("\n Config saved successfully!")
     time.sleep(1)
 
 def spinner(msg="Saving..."):
@@ -68,7 +68,7 @@ def run_cli():
                 val = float(input("Enter sensitivity (e.g., 1.0 - 3.0): "))
                 config["audio_sensitivity"] = val
             except ValueError:
-                print("❌ Invalid input.")
+                print(" Invalid input.")
         elif choice == "4":
             config["motion_mode_enabled"] = not config["motion_mode_enabled"]
         elif choice == "5":
@@ -76,7 +76,7 @@ def run_cli():
                 val = int(input("Set brightness (0–100): "))
                 config["brightness"] = max(0, min(100, val))
             except ValueError:
-                print("❌ Invalid input.")
+                print(" Invalid input.")
         elif choice == "6":
             config["playlist_mode"] = not config["playlist_mode"]
         elif choice == "7":
@@ -87,7 +87,7 @@ def run_cli():
             print("Exited without saving.")
             break
         else:
-            print("❌ Invalid option.")
+            print(" Invalid option.")
         input("\nPress ENTER to continue...")
 
 if __name__ == "__main__":
