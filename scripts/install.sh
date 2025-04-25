@@ -60,15 +60,23 @@ sudo raspi-config nonint do_i2c 0 || true
 # Step 5: rpi-rgb-led-matrix Install
 echo "[5/8] Installing or updating rpi-rgb-led-matrix..."
 cd ~
+
 if [ ! -d "rpi-rgb-led-matrix" ]; then
   echo "Cloning rpi-rgb-led-matrix..."
   git clone $MATRIX_LIB_REPO
 else
-  echo "Updating existing rpi-rgb-led-matrix repo..."
-  cd rpi-rgb-led-matrix
-  git reset --hard HEAD
-  git pull
+  echo "Checking existing rpi-rgb-led-matrix repo..."
+  if [ -d "rpi-rgb-led-matrix/.git" ]; then
+    cd rpi-rgb-led-matrix
+    git reset --hard HEAD
+    git pull
+  else
+    echo "Warning: Existing rpi-rgb-led-matrix is not a valid git repo. Re-cloning..."
+    rm -rf rpi-rgb-led-matrix
+    git clone $MATRIX_LIB_REPO
+  fi
 fi
+
 cd ~/rpi-rgb-led-matrix
 make clean
 make build-python
