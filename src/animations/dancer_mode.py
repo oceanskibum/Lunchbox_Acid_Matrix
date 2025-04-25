@@ -1,9 +1,13 @@
-# Motion-Reactive Animation Mode
+from rgbmatrix import RGBMatrix
 
-def animate_from_motion(magnitude):
-    if magnitude > 25000:
-        print("🕺 Full body bounce!")
-    elif magnitude > 15000:
-        print("💃 Sway detected.")
+def run_animation(matrix: RGBMatrix, preview=False):
+    import time
+    matrix.Clear()
+    for i in range(0, 64, 4):
+        for j in range(0, 64, 4):
+            matrix.SetPixel(i, j, 0, 255, 128)
+    if preview:
+        time.sleep(10)
     else:
-        print("Standing still.")
+        while True:
+            time.sleep(1)
