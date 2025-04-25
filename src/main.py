@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import json
-import time
 import os
+import time
+from src.animations import ANIMATION_MODES
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "config.json")
+CONFIG_PATH = "config/config.json"
 
 ascii_art = """
  _                      _     ____                           _     _ 
@@ -24,71 +25,115 @@ def load_config():
 def save_config(data):
     with open(CONFIG_PATH, 'w') as f:
         json.dump(data, f, indent=2)
-    print("\n Config saved successfully!")
-    time.sleep(1)
+    print("\nSettings saved to config/config.json")
 
-def spinner(msg="Saving..."):
-    print(msg, end="")
-    for _ in range(6):
-        for c in "|/-\\": print(f"\b{c}", end="", flush=True); time.sleep(0.1)
-    print("\b ✔")
+def prompt_bool(label, current):
+    prompt = f"{label}? [Y/n] (currently: {'Enabled' if current else 'Disabled'}): "
+    choice = input(prompt).strip().lower()
+    if choice in ["y", "yes", ""]:
+        return True
+    elif choice in ["n", "no"]:
+        return False
+    else:
+        print("Invalid input. Please enter Y or N.")
+        return prompt_bool(label, current)
 
-def show_menu():
-    os.system("clear" if os.name == "posix" else "cls")
-    print(ascii_art)
-    print("🎛  Lunchbox Acid Matrix: Configuration CLI Tool")
-    print("-------------------------------------------------")
-    print("1. Set Visualization Mode")
-    print("2. Toggle Audio Reactive")
-    print("3. Adjust Audio Sensitivity")
-    print("4. Toggle Motion (Dancer Mode)")
-    print("5. Set Brightness")
-    print("6. Toggle Playlist Mode")
-    print("7. Save & Exit")
-    print("0. Exit without Saving")
-    print("-------------------------------------------------")
+def prompt_float(label, current, min_val=0.1, max_val=5.0):
+    try:
+        val = float(input(f"{label} (current: {current}) [Range: {min_val}–{max_val}]: ").strip())
+        return max(min(val, max_val), min_val)
+    except ValueError:
+        print("Invalid input. Enter a number.")
+        return prompt_float(label, current, min_val, max_val)
+
+def prompt_int(label, current, min_val=0, max_val=100):
+    try:
+        val = int(input(f"{label} (current: {current}) [Range: {min_val}–{max_val}]: ").strip())
+        return max(min(val, max_val), min_val)
+    except ValueError:
+        print("Invalid input. Enter an integer.")
+        return prompt_int(label, current, min_val, max_val)
+
+def run_live_preview(mode):
+    print(f"Running preview for {mode}...")
+    import importlib
+    from rgbmatrix import RGBMatrix, RGBMatrixOptions
+
+    options = RGBMatrixOptions()
+    options.rows = 64
+    options.cols = 64
+    options.chain_length = 1
+    options.parallel = 1
+    options.slowdown_gpio = 4
+    options.pwm_bits = 11
+    options.gpio_mapping = 'adafruit-hat-pwm'
+    options.hardware_pulsing = False
+
+    matrix = RGBMatrix(options=options)
+    try:
+        module = importlib.import_module(f"src.animations.{mode}")
+        module.run_animation(matrix, preview=True)
+    except Exception as e:
+        print(f" Error: {e}")
+    finally:
+        matrix.Clear()
+        print("Preview ended.")
+
+def show_menu(config):
+    print("\n=== 🎛 Lunchbox Acid Matrix Configurator ===")
+    print(f"[1] Select Visual Mode              [Current: {config['visualization']}]")
+    print(f"[2] Adjust Brightness              [Current: {config['brightness']}]")
+    print(f"[3] Enable/Disable Audio-Reactive  [Current: {'Enabled' if config['audio_reactive'] else 'Disabled'}]")
+    print(f"[4] Adjust Mic Sensitivity         [Current: {config['audio_sensitivity']}]")
+    print(f"[5] Enable/Disable Motion (IMU)    [Current: {'Enabled' if config['motion_mode_enabled'] else 'Disabled'}]")
+    print(f"[6] Toggle Playlist Mode           [Current: {'Enabled' if config['playlist_mode'] else 'Disabled'}]")
+    print(f"[7] View Animation Mode Index")
+    print(f"[8] Run Live Matrix Preview")
+    print(f"[9] Save Settings & Exit")
+    print(f"[0] Exit without Saving")
+    print("============================================")
 
 def run_cli():
     config = load_config()
     while True:
-        show_menu()
-        print(f"Current Mode: {config['visualization']}")
-        print(f"Audio Reactive: {config['audio_reactive']}  | Sensitivity: {config['audio_sensitivity']}")
-        print(f"Motion: {config['motion_mode_enabled']}  | Brightness: {config['brightness']}")
-        print(f"Playlist: {config['playlist_mode']}")
-        choice = input("\nEnter choice: ").strip()
+        show_menu(config)
+        choice = input("Enter your choice: ").strip()
 
         if choice == "1":
-            val = input("Enter visualization mode [house_mode, bass_mode, techno_mode, basshouse_mode, dancer_mode, idle_mode]: ").strip()
-            config["visualization"] = val
+            print("Available modes:")
+            for mode in ANIMATION_MODES:
+                print(f"  - {mode}")
+            selected = input("Type a mode name to select: ").strip()
+            if selected in ANIMATION_MODES:
+                config["visualization"] = selected
+                if prompt_bool("Run preview for this mode", True):
+                    run_live_preview(selected)
+            else:
+                print("Invalid mode.")
         elif choice == "2":
-            config["audio_reactive"] = not config["audio_reactive"]
+            config["brightness"] = prompt_int("Set brightness level", config["brightness"])
         elif choice == "3":
-            try:
-                val = float(input("Enter sensitivity (e.g., 1.0 - 3.0): "))
-                config["audio_sensitivity"] = val
-            except ValueError:
-                print(" Invalid input.")
+            config["audio_reactive"] = prompt_bool("Enable Audio-Reactive mode", config["audio_reactive"])
         elif choice == "4":
-            config["motion_mode_enabled"] = not config["motion_mode_enabled"]
+            config["audio_sensitivity"] = prompt_float("Set mic sensitivity", config["audio_sensitivity"])
         elif choice == "5":
-            try:
-                val = int(input("Set brightness (0–100): "))
-                config["brightness"] = max(0, min(100, val))
-            except ValueError:
-                print(" Invalid input.")
+            config["motion_mode_enabled"] = prompt_bool("Enable motion-reactive dancer mode", config["motion_mode_enabled"])
         elif choice == "6":
-            config["playlist_mode"] = not config["playlist_mode"]
+            config["playlist_mode"] = prompt_bool("Enable Playlist Mode", config["playlist_mode"])
         elif choice == "7":
-            spinner("💾 Saving")
+            print("\n🗂 Available Modes:")
+            for mode in ANIMATION_MODES:
+                print(f"  - {mode}")
+        elif choice == "8":
+            run_live_preview(config["visualization"])
+        elif choice == "9":
             save_config(config)
             break
         elif choice == "0":
             print("Exited without saving.")
             break
         else:
-            print(" Invalid option.")
-        input("\nPress ENTER to continue...")
+            print("Invalid option.")
 
 if __name__ == "__main__":
     run_cli()
