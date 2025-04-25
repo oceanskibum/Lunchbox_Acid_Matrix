@@ -31,8 +31,8 @@ python3 -m venv "$VENV_PATH"
 source "$VENV_PATH/bin/activate"
 
 echo "[3/7] Installing Python packages..."
-pip install --upgrade pip
-pip install RPi.GPIO sounddevice numpy smbus2
+pip install --upgrade pip setuptools wheel
+pip install Pillow sounddevice numpy RPi.GPIO smbus2
 
 echo "[4/7] Enabling I2C..."
 sudo raspi-config nonint do_i2c 0
@@ -41,10 +41,13 @@ echo "[5/7] Installing rpi-rgb-led-matrix..."
 cd ~
 if [ ! -d "rpi-rgb-led-matrix" ]; then
   git clone $MATRIX_LIB_REPO
+else
+  cd rpi-rgb-led-matrix && git pull
 fi
-cd rpi-rgb-led-matrix
-make build-python PYTHON=$(which python3)
-sudo make install-python PYTHON=$(which python3)
+cd ~/rpi-rgb-led-matrix
+make clean
+make build-python
+make install-python
 
 echo "[6/7] Setting up project directory..."
 if [ ! -d "$INSTALL_PATH" ]; then
@@ -52,10 +55,8 @@ if [ ! -d "$INSTALL_PATH" ]; then
   echo "Then re-run this installer to finalize setup."
   exit 1
 fi
-
-echo "[7/7] Finalizing CLI..."
 chmod +x "$INSTALL_PATH/src/main.py"
-chmod +x "$INSTALL_PATH/lunchbox_acid_matrix.py"
+[ -f "$INSTALL_PATH/lunchbox_acid_matrix.py" ] && chmod +x "$INSTALL_PATH/lunchbox_acid_matrix.py"
 
 if [[ "$1" == "--with-systemd" ]]; then
   echo "Enabling systemd..."
