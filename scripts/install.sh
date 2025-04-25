@@ -39,9 +39,15 @@ echo "OS: $OS_VERSION"
 
 # Step 1: System Packages
 echo "[1/8] Installing system packages..."
-sudo apt update && sudo apt install -y \\
-  git python3-pip python3-venv python3-smbus \\
-  i2c-tools build-essential lsb-release cython3
+sudo apt update && sudo apt install -y \
+  git \
+  python3-pip \
+  python3-venv \
+  python3-smbus \
+  i2c-tools \
+  build-essential \
+  lsb-release \
+  cython3
 
 # Step 2: Python Virtual Environment
 echo "[2/8] Creating and activating virtual environment..."
