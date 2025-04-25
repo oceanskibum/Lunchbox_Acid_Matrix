@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import json
-import os
 import time
+import itertools
+import threading
 from src.animations import ANIMATION_MODES
 
 CONFIG_PATH = "config/config.json"
@@ -18,6 +22,22 @@ ascii_art = """
 >>> V1.13
 """
 
+def show_spinner(stop_event):
+    for c in itertools.cycle(['|', '/', '-', '\\']):
+        if stop_event.is_set():
+            break
+        print(f"\r🔧 Initializing {c}", end='', flush=True)
+        time.sleep(0.1)
+    print("\r Ready!           ")
+
+def startup_animation():
+    stop = threading.Event()
+    spinner_thread = threading.Thread(target=show_spinner, args=(stop,))
+    spinner_thread.start()
+    time.sleep(2)
+    stop.set()
+    spinner_thread.join()
+
 def load_config():
     with open(CONFIG_PATH, 'r') as f:
         return json.load(f)
@@ -25,7 +45,7 @@ def load_config():
 def save_config(data):
     with open(CONFIG_PATH, 'w') as f:
         json.dump(data, f, indent=2)
-    print("\nSettings saved to config/config.json")
+    print("\n Settings saved to config/config.json")
 
 def prompt_bool(label, current):
     prompt = f"{label}? [Y/n] (currently: {'Enabled' if current else 'Disabled'}): "
@@ -74,10 +94,10 @@ def run_live_preview(mode):
         module = importlib.import_module(f"src.animations.{mode}")
         module.run_animation(matrix, preview=True)
     except Exception as e:
-        print(f" Error: {e}")
+        print(f"Error: {e}")
     finally:
         matrix.Clear()
-        print("Preview ended.")
+        print(" Preview ended.")
 
 def show_menu(config):
     print("\n=== 🎛 Lunchbox Acid Matrix Configurator ===")
@@ -95,6 +115,8 @@ def show_menu(config):
 
 def run_cli():
     config = load_config()
+    print(ascii_art)
+    startup_animation()
     while True:
         show_menu(config)
         choice = input("Enter your choice: ").strip()
@@ -115,13 +137,14 @@ def run_cli():
         elif choice == "3":
             config["audio_reactive"] = prompt_bool("Enable Audio-Reactive mode", config["audio_reactive"])
         elif choice == "4":
+            print("🎤 Mic Sensitivity controls how strongly the matrix responds to bass.")
             config["audio_sensitivity"] = prompt_float("Set mic sensitivity", config["audio_sensitivity"])
         elif choice == "5":
             config["motion_mode_enabled"] = prompt_bool("Enable motion-reactive dancer mode", config["motion_mode_enabled"])
         elif choice == "6":
             config["playlist_mode"] = prompt_bool("Enable Playlist Mode", config["playlist_mode"])
         elif choice == "7":
-            print("\n🗂 Available Modes:")
+            print("\n Available Modes:")
             for mode in ANIMATION_MODES:
                 print(f"  - {mode}")
         elif choice == "8":
