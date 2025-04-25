@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
-trap 'echo "❌ Error occurred on line $LINENO. Exiting." && exit 1' ERR
+trap 'echo "Error occurred on line $LINENO. Exiting." && exit 1' ERR
 
 PROJECT_NAME="Lunchbox_Acid_Matrix"
 INSTALL_PATH="$HOME/$PROJECT_NAME"
@@ -27,7 +27,7 @@ show_help() {
 if [[ "${1:-}" == "--help" ]]; then show_help; fi
 
 # ---- Version Checks ----
-echo "🔍 Checking system versions..."
+echo "Checking system versions..."
 
 PYTHON_VERSION=$(python3 -V 2>&1)
 PIP_VERSION=$(pip3 -V 2>&1)
@@ -74,8 +74,8 @@ make install-python
 # ---- Step 6: Validate Project Folder ----
 echo "[6/8] Validating project folder..."
 if [ ! -d "$INSTALL_PATH" ]; then
-  echo "❗ Project folder not found at $INSTALL_PATH"
-  echo "💡 Please unzip the project into: $INSTALL_PATH"
+  echo "Project folder not found at $INSTALL_PATH"
+  echo "Please unzip the project into: $INSTALL_PATH"
   exit 1
 fi
 
@@ -88,7 +88,7 @@ if [[ "${1:-}" == "--with-systemd" ]]; then
   sudo cp "$INSTALL_PATH/service/lunchbox_acid_matrix.service" /etc/systemd/system/
   sudo systemctl daemon-reload
   sudo systemctl enable lunchbox_acid_matrix
-  echo "✅ Systemd service enabled."
+  echo "Systemd service enabled."
 else
   echo "[7/8] Skipping systemd setup (run with --with-systemd to enable)."
 fi
@@ -96,5 +96,5 @@ fi
 # ---- Step 8: Done ----
 echo "[8/8] Install complete."
 cd "$INSTALL_PATH"
-echo "🚀 Launching CLI..."
+echo "Launching CLI..."
 python3 src/main.py
